@@ -19,8 +19,8 @@ As of now, only the Slack service is supported. I believe that a paid account is
 ## Slack Configuration
 
 These are the recommended steps to get your Slack credentials set up. You need to create an "app" with appropriate permissions, a Slack API token, and a channel id to send messages.
-1. Go to https://api.slack.com/apps and click the [Create New App] button ()
-   1. Choose [From Scratch]
+1. Go to https://api.slack.com/apps and click the [Create New App] button.
+   1. Choose [From Scratch].
    2. Choose a name for your app. It can be changed later on the Slack API page under Features/App Home/Your App's Presence in Slack.
    3. Select from the dropdown menu to pick a workspace for your app. If you don't have a workspace, log into Slack and create one first.
    4. Upon completion of the last step, scroll down the page to the Building Apps for Slack section and click [Install your app], then click [permission scope].
