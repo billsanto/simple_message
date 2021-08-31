@@ -11,7 +11,7 @@ m.send('Hello world from my notebook')
 ```
 In a typical use case, you might have a batch job and would like to be notified when the job starts or stops, or if it encounters some condition, checkpoint milestone, or exception. It is not intended for two-way communication or complex messaging uses.
 
-A key design objective of this utility is to provide minimize the boilerplate code needed to send basic message. This makes the code flexible in a way that switching in the future to an alternate service such as Twilio for notifications could minimize the effort required to refactor every program that otherwise directly embeds the native Slack SDK commands. See the example in their [API docs](https://slack.dev/python-slack-sdk/web/index.html#messaging). 
+A key design objective of this utility is to provide minimize the boilerplate needed to send a basic message. This makes the code flexible in a way that switching in the future to an alternate service such as Twilio for notifications could minimize the effort required to refactor every program that otherwise directly embeds the native Slack SDK commands. See the example in their [API docs](https://slack.dev/python-slack-sdk/web/index.html#messaging). 
 
 As of now, only the Slack service is supported. I believe that a paid account is not required to use the messaging service. Internally, this program is wrapping Slack WebClient [chat_postMessage()](https://slack.dev/python-slack-sdk/web/index.html#messaging) messaging code.
 
