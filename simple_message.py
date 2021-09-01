@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from typing import List
 from slack_sdk import WebClient
@@ -258,8 +259,6 @@ class _SlackMessage:
 
 if __name__ == "__main__":
     # Simple Slack test
-    import os
-
     msg_token = os.environ.get("SLACK_BOT_TOKEN")
     channel_id = os.environ.get("SLACK_CHANNEL_ID_DEMO")
 
