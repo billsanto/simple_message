@@ -12,7 +12,7 @@ class SimpleMessage:
         self,
         token,
         destination_id="",
-        msg_service_env_name="MESSAGE_SERVICE_TYPE_DEFAULT",
+        msg_service_env_name="SIMPLE_MESSAGE_TYPE_DEFAULT",
         msg_service_override="",
         display_errors=True,
         log_filename="",
@@ -75,12 +75,12 @@ class SimpleMessage:
             msg_service_override not in self.valid_msg_services
             and msg_env_value not in self.valid_msg_services
         ):
-            error_msg = """Must specify an environment variable name which contains the message service type or the
-            service type in msg_service_override. Valid values to date for message service type are {}. 
-            If msg_service_override is specified then it will take precedence over the env variable setting.
-            """.replace(
-                "\n", ""
-            )
+            error_msg = (
+                "Must specify an environment variable name which contains the message service type or the"
+                "service type in msg_service_override. Valid values to date for message service type are {}. "
+                "If msg_service_override is specified then it will take precedence over the "
+                "env variable setting.".replace("\n", "")
+            ) + "\n"
 
             error_msg.format(", ".join([f'"{x}"' for x in self.valid_msg_services]))
             self._log_error(error_msg)
