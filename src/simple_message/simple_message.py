@@ -112,7 +112,7 @@ class SimpleMessage:
             # for other messaging services
             return None
 
-    def get_last_api_response_objects(self, n=1):
+    def last_api_responses(self, n=1):
         """
             Return the objects returned by the last send message attempt API call
         @param n: int, last n objects in stack of responses
@@ -140,11 +140,11 @@ class SimpleMessage:
         else:
             pass  # TODO when another service is implemented
 
-    def get_last_api_response_object(self):
+    def last_api_response(self):
         """
         @return: object, the last api response only
         """
-        responses = self.get_last_api_response_objects(n=1)
+        responses = self.last_api_responses(n=1)
         return responses[0] if len(responses) > 0 else None
 
     def _setup_logging(self):

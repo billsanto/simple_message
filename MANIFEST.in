@@ -1,0 +1,4 @@
+global-exclude *.log
+global-exclude *.py[cod]
+global-exclude *.ipynb
+global-exclude *.html

@@ -1,7 +1,8 @@
 import unittest
 import os
-import simple_message as msg
 import sys
+
+from simple_message import simple_message as msg
 
 
 class SimpleMessageTestCase(unittest.TestCase):
@@ -36,7 +37,7 @@ class SimpleMessageTestCase(unittest.TestCase):
         func = sys._getframe().f_code.co_name
         m = msg.SimpleMessage(token=self.msg_token, destination_id=self.channel_id)
         rv = m.send(f'Python unit test, {func}', destination_id=self.channel_id2)
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertTrue(rv)
         self.assertEqual(self.channel_id2, ro['channel'])
@@ -47,7 +48,7 @@ class SimpleMessageTestCase(unittest.TestCase):
 
         m = msg.SimpleMessage(token=self.msg_token, destination_id=bad_channel_id)
         rv = m.send(f'Python unit test, {func}')
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertFalse(rv)
         self.assertEqual('channel_not_found', ro['error'])
@@ -58,7 +59,7 @@ class SimpleMessageTestCase(unittest.TestCase):
 
         m = msg.SimpleMessage(token=self.msg_token)
         rv = m.send(f'Python unit test, {func}', destination_id=bad_channel_id)
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertFalse(rv)
         self.assertEqual('channel_not_found', ro['error'])
@@ -69,7 +70,7 @@ class SimpleMessageTestCase(unittest.TestCase):
 
         m = msg.SimpleMessage(token=self.msg_token)
         rv = m.send(f'Python unit test, {func}', destination_id=bad_channel_id)
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertFalse(rv)
         # self.assertEqual(ro['error'], 'invalid_arguments')
@@ -81,7 +82,7 @@ class SimpleMessageTestCase(unittest.TestCase):
 
         m = msg.SimpleMessage(token=bad_token_id)
         rv = m.send(f'Python unit test, {func}', destination_id=self.channel_id)
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertFalse(rv)
         self.assertEqual('invalid_auth', ro.get('error'))
@@ -96,7 +97,7 @@ class SimpleMessageTestCase(unittest.TestCase):
 
         m = msg.SimpleMessage(token=bad_token_id)
         rv = m.send(f'Python unit test, {func}', destination_id=self.channel_id)
-        ro = m.get_last_api_response_object()
+        ro = m.last_api_response()
 
         self.assertFalse(rv)
         self.assertEqual('not_authed', ro.get('error'))
@@ -109,7 +110,7 @@ class SimpleMessageTestCase(unittest.TestCase):
             m.send(f'Python unit test, {func}, message {i+1}')
 
         expected = i + 1
-        response_list = m.get_last_api_response_objects(n=expected)
+        response_list = m.last_api_responses(n=expected)
 
         self.assertIsInstance(response_list, list)
         self.assertEqual(len(response_list), expected)

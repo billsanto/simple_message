@@ -1,6 +1,6 @@
 import unittest
 import os
-import simple_message as msg
+from simple_message import simple_message as msg
 import sys
 
 
@@ -20,7 +20,7 @@ class SimpleMessageTestLogfileCase(unittest.TestCase):
             Check if message text is contained in log file contents
         """
         func = sys._getframe().f_code.co_name
-        log_filename = 'test_message.log'
+        log_filename = '../test_message.log'
 
         if os.path.exists(log_filename):
             os.remove(log_filename)

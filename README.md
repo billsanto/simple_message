@@ -1,24 +1,24 @@
 # Simple Message
 
-Simple Message is a Python 3 program that makes sending basic Slack text messages easy. In as few as three lines of code, you can send Slack messages to a channel. Each additional message is reduced to a one-liner.
+Simple Message is a Python 3 package that simplifies the task of sending basic Slack messages. In as few as the following lines of code, you can send Slack messages to a channel. Any additional messages can be sent with just one simple line of code. It handles logging and error handling, and makes available a full history of responses to API calls made within a session.
 
 ```python
 import simple_message as sm
 
 m = sm.SimpleMessage("YOUR API TOKEN", destination_id="YOUR CHANNEL ID")
-m.send('Hello world from my notebook')
+m.send('Hello world!')
 
 ```
-In a typical use case, you might have a batch job and would like to be notified when the job starts or stops, or if it encounters some condition, checkpoint milestone, or exception. It is not intended for two-way communication or complex messaging uses.
+In a typical use case, you might have a batch job and would like to be notified when the job starts or stops, or if it encounters some condition, checkpoint milestone, or exception. It is not intended for two-way communication or complex messaging that Slack offers.
 
-A key design objective of this utility is to provide minimize the boilerplate needed to send a basic message. This makes the code flexible in a way that switching in the future to an alternate service such as Twilio for notifications could minimize the effort required to refactor every program that otherwise directly embeds the native Slack SDK commands. See the example in their [API docs](https://slack.dev/python-slack-sdk/web/index.html#messaging). 
+A key design objective of this utility is to provide minimize the boilerplate needed to send a basic message. This makes the code flexible in a way that switching in the future to an alternate service such as Twilio for notifications could minimize the effort required to refactor every program that otherwise directly embeds the native Slack SDK commands. See the example in their [API docs](https://slack.dev/python-slack-sdk/web/index.html#messaging). Their example shows how the post method would normally be wrapped in a try/except block. This package will handle those exceptions for you and will return a boolean to indicate success, without halting execution of your primary code, while providing methods for troubleshooting the stored API responses directly.
 
 As of now, only the Slack service is supported. I believe that a paid account is not required to use the messaging service. Internally, this program is wrapping Slack WebClient [chat_postMessage()](https://slack.dev/python-slack-sdk/web/index.html#messaging) messaging code.
 
 
 ## Slack Configuration
 
-These are the recommended steps to get your Slack credentials set up. You need to create an "app" with appropriate permissions, a Slack API token, and a channel id to send messages.
+These are the recommended steps to get your Slack credentials set up. You need to create an "app" with appropriate permissions, a Slack API token, and a channel id to send messages. If you have existing tokens or channels you'd like to use, then skip to an appropriate step below.
 1. Go to https://api.slack.com/apps and click the [Create New App] button.
    1. Choose [From Scratch].
    2. Choose a name for your app. It can be changed later on the Slack API page under Features/App Home/Your App's Presence in Slack.
@@ -34,7 +34,7 @@ These are the recommended steps to get your Slack credentials set up. You need t
 3. Go to your Slack desktop app and select the workspace. Right-click on the channel that should receive messages (or create a test channel first and then right-click it). Select 'Open channel details'.
 4. At the very bottom of the dialog box you will see a Channel ID. Copy it to the clipboard.
 5. Create another environment variable with any name and assign the channel id to it.
-6. Next, create another environment variable named "SIMPLE_MESSAGE_TYPE_DEFAULT" and assign the value "slack" (case-insensitive) to it. The program searches for this environment variable to determine the service to use as a default. By using this name you will not need to explicitly specify using Slack as the service type. In the future should your needs change and you must switch to a different messaging service, you will not need to update your code to change the service selection if you rely on this environment variable. Instead you would update the value of the environment variable once the new service has been implemented. However, you are free to use any name, in which case you will need to pass it to the parameter "msg_service_env_name" during instantiation.
+6. Next, create another environment variable named "SIMPLE_MESSAGE_TYPE_DEFAULT" and assign the value "slack" (case-insensitive) to it. The program searches for this _specific_ environment variable to determine the service to use as a default. By using this name you will not need to explicitly specify using Slack as the service type. In the future should your needs change and you must switch to a different messaging service, you will not need to update your code to change the service selection if you rely on this environment variable. Instead you would update the value of the environment variable once the new service has been implemented. However, you are free to use any name, in which case you will need to pass it to the parameter "msg_service_env_name" during instantiation.
 7. Before any channel can receive messages from your app, in the desktop app you need to right-click the app and select 'Open app details'.
 8. Then click the 'Add this app to a channel' button and select the intended channel. To validate that the app was successfully added to the channel, right-click the channel and again select 'Open channel details', then go to the Integrations tab and you should see your app name under the Apps section.
 9. On the Slack API page you can review your app settings under Settings/App Manifest in both YAML and JSON formats (currently a beta feature). Otherwise, you can navigate through sections under Settings/Basic Information. You can verify that your app has the chat:write and channels:join scopes in your yaml file, which should resemble the following:
@@ -61,15 +61,14 @@ settings:
 ```
 
 ## Installation
-First, install the Slack SDK
+Install the package using pip (conda install is not available at this time). The Slack SDK package will be installed if not detected in your environment.
 ```python
-pip install slack_sdk
+pip install simple_message
 ```
-Next download the simple_message.py program and install it to a logical location in your python module search path. Your import statement path may differ from the example below depending on where you installed it.
-
 ## Usage
 
-After the setup is complete, you are ready to test it. With the environment variables in place, a typical basic setup might look like this:
+After the above steps are complete, you are ready to test. With the environment variables in place, a typical basic setup might look like this:
+
 ```python
 import simple_message as sm
 import os
@@ -78,14 +77,16 @@ msg_token = os.environ.get('SIMPLE_MESSAGE_API_TOKEN')
 channel_id = os.environ.get('SLACK_CHANNEL_ID_DEMO')
 
 m = sm.SimpleMessage(token=msg_token, destination_id=channel_id)
-m.send('Hello world from my notebook')  # send() returns True or False, indicating delivery success
+m.send('Hello world!')  # send() returns True or False, indicating delivery success
 ```
+
+In the above configuration, the message is directed to the channel configured during instantiation, so any additional messages will also be directed to the same channel by default.
 ### Multiple Channels
-Should you need to send messages to different channels, you can do so by setting the channel_id in the send() call. Setting an id in this manner will override the channel_id set when your instantiated the class. There is no ceiling on the number of channels you can use.
+Should you need to send messages to different channels at various points in your code, you can do so by setting the destination_id parameter to the desired Slack channel ID in the send() call. Setting an id in this manner will override the destination_id set at the instance level. There is no ceiling on the number of channels you can use.
 
 ```python
 channel_id2 = os.environ.get('SLACK_CHANNEL_ID_DEMO2')  # Adding a second channel
-m.send('Hello world from my notebook', destination_id=channel_id2)
+m.send('Hello world!', destination_id=channel_id2)
 ```
 
 ### Logging
@@ -93,7 +94,7 @@ By default, the python logging facility will log messages that meet the specifie
 
 Valid logging levels are: DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET. See the Python [logging docs](https://docs.python.org/3/howto/logging.html#basic-logging-tutorial) for more details.
 
-NOTE: An extension of .log will be appended to any name entered if you don't specify .log as the extension.
+NOTE: For convenience, an extension of .log will be appended to any log filename entered if you don't specify .log as the extension.
 ```python
 log_filename = 'messages.log'
 
@@ -102,33 +103,80 @@ m2 = sm.SimpleMessage(token=msg_token, destination_id=channel_id, log_filename=l
 ```
 
 ## Troubleshooting
-A Simple Message instance will store a list of all SlackResponse objects returned from every Slack API call.
-```notebook
+A Simple Message instance will store a list of all SlackResponse objects returned from each Slack API call.
+```python
 # e.g., setting n=4 will return the last 4 responses in a list
-m.get_last_api_response_objects(n=4)
+m.last_api_responses(n=4)
 
-# Use this method to get the most recent response (not a list)
-m.get_last_api_response_object()  
+# Use this method to get the most recent response (singular, does not return a list)
+m.last_api_response()  
 
 # which is equivalent to the following:
-response_list = m.get_last_api_response_objects(n=1)
+response_list = m.last_api_responses(n=1)
 response_list[0]  # SlackResponse instance
 ```
-```notebook
+```python
 <slack_sdk.web.slack_response.SlackResponse object at 0x7fbb002c5910>
 ```
-```notebook
+Slack response attributes:
+```python
 # You can explore the available attributes of this object using dir()
-dir(resppnse_list[0])
+dir(response_list[0])
+```
 
-# or using __dict__
-response_list[0].__dict__
+```python  
+['__class__',
+ '__contains__',
+ '__delattr__',
+ '__dict__',
+ '__dir__',
+ '__doc__',
+ '__eq__',
+ '__format__',
+ '__ge__',
+ '__getattribute__',
+ '__getitem__',
+ '__gt__',
+ '__hash__',
+ '__init__',
+ '__init_subclass__',
+ '__iter__',
+ '__le__',
+ '__lt__',
+ '__module__',
+ '__ne__',
+ '__new__',
+ '__next__',
+ '__reduce__',
+ '__reduce_ex__',
+ '__repr__',
+ '__setattr__',
+ '__sizeof__',
+ '__str__',
+ '__subclasshook__',
+ '__weakref__',
+ '_client',
+ '_initial_data',
+ '_iteration',
+ '_logger',
+ 'api_url',
+ 'data',
+ 'get',
+ 'headers',
+ 'http_verb',
+ 'req_args',
+ 'status_code',
+ 'validate']
+```
+```python
+# Or you can use __dict__ to inspect a fully populated dict of key/value pairs
+response_list[0].__dict__  # Output not displayed here
 
-# The data attribute of SlackResponse shows the following:
+# For example, the data attribute of SlackResponse shows the following:
 from pprint import pprint
 pprint(response_list[0].data)
 ```
-```notebook
+```python
 {'channel': 'xyz',
  'message': {'bot_id': 'xyz',
              'bot_profile': {'app_id': 'xyz',
@@ -141,10 +189,18 @@ pprint(response_list[0].data)
                              'team_id': 'xyz',
                              'updated': 1630014102},
              'team': 'xyz',
-             'text': 'Hello world from my notebook',
+             'text': 'Hello world',
              'ts': '1630385147.000900',
              'type': 'message',
              'user': 'xyz'},
  'ok': True,
  'ts': '1630385147.000900'}
+```
+
+Checking the HTTP status code:
+```python
+response_list[0].status_code
+```
+```python
+200
 ```
