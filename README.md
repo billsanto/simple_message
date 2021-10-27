@@ -15,6 +15,11 @@ A key design objective of this utility is to provide minimize the boilerplate ne
 
 As of now, only the Slack service is supported. I believe that a paid account is not required to use the messaging service. Internally, this program is wrapping Slack WebClient [chat_postMessage()](https://slack.dev/python-slack-sdk/web/index.html#messaging) messaging code.
 
+## Installation
+Install the package using pip (conda install is not available at this time). The Slack SDK package is the only package dependency will be installed if not detected in your environment.
+```python
+pip install simple_message
+```
 
 ## Slack Configuration
 
@@ -29,7 +34,7 @@ These are the recommended steps to get your Slack credentials set up. You need t
    7. On the same page, OAuth & Permissions, look at the OAuth Tokens for Your Workspace section and click [Install to Workspace]. This option was not available before you added the scopes in the previous steps.
    8. You will see a page requesting permission for the app to access the workspace. Click [Allow].
    9. Now you can look in your Slack desktop app and see the app you created under the Apps section in the left frame.
-   10. Back on the Slack API webpage, under the OAuth Tokens for your Workspace section, you will see a long token like xxxx-12345678912-12345678912-xxxxxxxxxxxxxxxxxxx with a [Copy] button to the right. Copy it to your clipboard,
+   10. Back on the Slack API webpage, under the OAuth Tokens for your Workspace section, you will see a long token like xxxx-12345678912-12345678912-xxxxxxxxxxxxxxxxxxx with a [Copy] button to the right. Copy it to your clipboard.
 2. Create an environment variable with any name and assign your copied OAuth token to it. Alternately, you could hard code the token into your own code every time you need it, though for obvious reasons this is not recommended. (How to set environment variables in [Windows](https://itsiti.com/how-to-set-environment-variables-in-windows-server/) using sysdm.cpl and in [OS X](https://phoenixnap.com/kb/set-environment-variable-mac))
 3. Go to your Slack desktop app and select the workspace. Right-click on the channel that should receive messages (or create a test channel first and then right-click it). Select 'Open channel details'.
 4. At the very bottom of the dialog box you will see a Channel ID. Copy it to the clipboard.
@@ -60,11 +65,6 @@ settings:
   token_rotation_enabled: false
 ```
 
-## Installation
-Install the package using pip (conda install is not available at this time). The Slack SDK package will be installed if not detected in your environment.
-```python
-pip install simple_message
-```
 ## Usage
 
 After the above steps are complete, you are ready to test. With the environment variables in place, a typical basic setup might look like this:
